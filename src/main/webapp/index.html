@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<!--
+Copyright (C) 2016 Johannes C. Schneider
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as 
+published by the Free Software Foundation, either version 3 of 
+the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this program. If not, see &lt;http://www.gnu.org/licenses/>.
+
+-->
+<html>
+    <head>
+        <!--Let browser know website is optimized for mobile-->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <meta charset="utf-8" />
+        <title>Lichtsteuerung</title>
+        <link rel="shortcut icon" href="favicon.ico" /> 
+
+        <!--Import Google Icon Font-->
+        <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+        <!--Import materialize.css-->
+        <link href="bower_components/materialize/dist/css/materialize.css" rel="stylesheet" type="text/css" media="screen,projection"/>
+        <!--Import own styles -->        
+        <link href="css/main.css" rel="stylesheet" />
+    </head>
+
+    <body>
+
+        <!--Import jQuery before materialize.js-->
+        <script src="bower_components/moment/min/moment.min.js" type="text/javascript"></script>
+        <script src="bower_components/jquery/dist/jquery.js" type="text/javascript"></script>
+        <script src="js/init.js" type="text/javascript"></script>
+        <script src="bower_components/materialize/dist/js/materialize.js" type="text/javascript"></script>
+        <script src="bower_components/vue/dist/vue.js" type="text/javascript"></script>
+
+
+        <div class="row">
+            <nav>
+                <div class="nav-wrapper">
+                    <a href="#" class="brand-logo">Lichtsteuerung</a>
+                </div>
+            </nav>
+        </div>
+
+        <div class="row space-after">
+            <div class="col s12">
+                <ul class="tabs tabs-fixed-width">
+                    <li class="tab col s3"><a class="active" href="#switchesA">A</a></li>
+                    <li class="tab col s3"><a href="#switchesB">B</a></li>
+                    <li class="tab col s3"><a href="#combos">Combo</a></li>
+                    <li class="tab col s3"><a id="eventTableTab" href="#events">Events</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="switchesA" class="row center">
+            <template v-for="myswitch of switches">
+                <div class="col s6 m3 myswitch">
+                    <a v-on:click="turnOn(myswitch)" class="waves-effect waves-light btn-large">
+                        <i class="material-icons left">lightbulb_outline</i>
+                        {{ myswitch.name }}
+                    </a>
+                </div>
+                <div class="col s6 m3 myswitch">
+                    <a v-on:click="turnOff(myswitch)" class="waves-effect waves-light btn-large">
+                        <i class="material-icons left">not_interested</i>
+                        {{ myswitch.name }}
+                    </a>
+                </div>
+            </template>
+        </div>
+
+        <div id="switchesB" class="row center">
+            <template v-for="myswitch of switches">
+                <div class="col s6 m3 myswitch">
+                    <a v-on:click="turnOn(myswitch)" class="waves-effect waves-light btn-large">
+                        <i class="material-icons left">lightbulb_outline</i>
+                        {{ myswitch.name }}
+                    </a>
+                </div>
+                <div class="col s6 m3 myswitch">
+                    <a v-on:click="turnOff(myswitch)" class="waves-effect waves-light btn-large">
+                        <i class="material-icons left">not_interested</i>
+                        {{ myswitch.name }}
+                    </a>
+                </div>
+            </template>
+        </div>
+
+        <div id="combos" class="row center">
+            <div v-for="combo in combos" class="col s6 m3 myswitch">
+                <a v-on:click="fire(combo)" class="waves-effect waves-light btn-large">
+                    <i class="material-icons left">lightbulb_outline</i>
+                    {{ combo }}
+                </a>
+            </div>
+        </div>
+
+        <div id="events" class="row">
+            <div class="col s12">
+                <table id="eventsTable" class="responsive-table striped">
+                    <thead>
+                        <tr>
+                            <th>Zeit</th>
+                            <th>Name</th>
+                            <th>Schalter</th>
+                            <th>Position</th>
+                            <th>Wiederholung</th>
+                            <th>Aktion</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr v-for="event of events">
+                            <td>{{ toDateString(event.executionTime) }}</td>
+                            <td>{{ event.name }}</td>
+                            <td>{{ event.switchName }}</td>
+                            <td>
+                                <div class="switch">
+                                    <label>
+                                        <input disabled type="checkbox" v-bind:checked="event.switchPosition? 'checked' : null">
+                                        <span class="lever"></span>
+                                    </label>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="switch">
+                                    <label>
+                                        <input disabled type="checkbox" v-bind:checked="event.repeating? 'checked' : null">
+                                        <span class="lever"></span>
+                                    </label>
+                                </div>
+                            </td>
+                            <td>
+                                <a v-on:click="update(event)" class="waves-effect waves-teal btn-flat" href="#editModal">
+                                    <i class="material-icons">mode_edit</i>
+                                </a>
+                                <a v-on:click="remove(event)" class="waves-effect waves-teal btn-flat">
+                                    <i class="small material-icons">delete</i>
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col s12">
+                <a id="addButton" class="btn-floating btn-large waves-effect waves-light red" href="#addModal">
+                    <i class="material-icons">add</i>
+                </a>
+            </div>
+        </div>
+
+        <div id="addModal" class="modal">
+            <div class="modal-content">
+                <div class="row">
+                    <div class="col s12">
+                        <h4>Event anlegen</h4>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <form class="col s12">
+                        <div class="row">
+                            <div class="input-field col m6 s12">
+                                <input v-model="executionString" id="add-date" type="text" class="validate">
+                                <label for="add-date">Zeit</label>
+                            </div>
+                            <div class="input-field col m6 s12">
+                                <input v-model="name" id="add-name" type="text" class="validate" required>
+                                <label for="add-name">Name</label>
+                            </div>
+                            <div class="col m6 s12">
+                                <label for="add-switch">Schalter</label>
+                                <select v-model="switchName" id="add-switch" class="browser-default">
+                                    <option v-for="name in switchNames" v-bind:value="name">{{ name }}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="input-field col m6 s12">
+                            <p></p>
+                            <div class="switch">
+                                <label>
+                                    Schalterposition 
+                                    <input v-model="switchPosition" id="add-position" type="checkbox">
+                                    <span class="lever"></span>
+                                </label>
+                            </div>
+
+                        </div>
+                        <div class="input-field col m6 s12">
+                            <p></p>
+                            <div class="switch">
+                                <label>
+                                    Wiederholung
+                                    <input v-model="repeating" id="add-repeat" type="checkbox">
+                                    <span class="lever"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <a id="buttonCreateEvent" href="#!" v-on:click="submit" class="modal-close waves-effect waves-green btn">Anlegen</a>
+                <a href="#!" class="modal-close waves-effect waves-green btn-flat">Abbrechen</a>
+            </div>
+        </div>
+
+        <div id="editModal" class="modal">
+            <div class="modal-content">
+                <div class="row">
+                    <div class="col s12">
+                        <h4>Event bearbeiten</h4>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <form class="col s12">
+                        <div class="row">
+                            <div class="input-field col m6 s12">
+                                <input v-model="executionString" id="edit-date" type="text" class="validate">
+                                <label for="edit-date">Zeit</label>
+                            </div>
+                            <div class="input-field col m6 s12">
+                                <input v-model="name" id="edit-name" type="text" class="validate" required>
+                                <label for="edit-name">Name</label>
+                            </div>
+                            <div class="col m6 s12">
+                                <label for="edit-switch">Schalter</label>
+                                <select v-model="switchName" id="edit-switch" class="browser-default">
+                                    <option v-for="name in switchNames" v-bind:value="name">{{ name }}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="input-field col m6 s12">
+                            <p></p>
+                            <div class="switch">
+                                <label>
+                                    Schalterposition 
+                                    <input v-model="switchPosition" id="edit-position" type="checkbox">
+                                    <span class="lever"></span>
+                                </label>
+                            </div>
+
+                        </div>
+                        <div class="input-field col m6 s12">
+                            <p></p>
+                            <div class="switch">
+                                <label>
+                                    Wiederholung
+                                    <input v-model="repeating" id="edit-repeat" type="checkbox">
+                                    <span class="lever"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <a id="buttonEditEvent" href="#!" v-on:click="submit" class="modal-close waves-effect waves-green btn">Aktualisieren</a>
+                <a href="#!" class="modal-close waves-effect waves-green btn-flat">Abbrechen</a>
+            </div>
+        </div>
+
+        <script src="js/main.js" type="text/javascript"></script>
+    </body>
+</html>
