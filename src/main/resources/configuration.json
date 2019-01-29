@@ -2,125 +2,171 @@
     "backgroundTaskWakeupUrl": "http://localhost:8080/rcSwitch/api/wakeup",
     "backgroundTaskWakeupDelayInSeconds": 5,
     "backgroundTaskIntervalInSeconds": 30,
-    "switches": [{
+    "switches": [
+        {
             "name": "A1",
             "group": "11000",
             "code": 1,
             "displayTab": "A"
-        }, {
+        },
+        {
             "name": "A2",
             "group": "11000",
             "code": 2,
             "displayTab": "A"
-        }, {
+        },
+        {
             "name": "A3",
             "group": "11000",
             "code": 3,
             "displayTab": "A"
-        }, {
+        },
+        {
             "name": "A4",
             "group": "11000",
             "code": 4,
             "displayTab": "A"
-        }, {
+        },
+        {
             "name": "B1",
             "group": "01000",
             "code": 1,
             "displayTab": "B"
-        }, {
+        },
+        {
             "name": "B2",
             "group": "01000",
             "code": 2,
             "displayTab": "B"
-        }],
-    "combinations": [{
+        },
+        {
+            "name": "B3",
+            "group": "01000",
+            "code": 3,
+            "displayTab": "B"
+        }
+    ],
+    "combinations": [
+        {
             "name": "A124 on",
-            "switchOperations": [{
+            "switchOperations": [
+                {
                     "name": "A1",
                     "position": true
-                }, {
+                },
+                {
                     "name": "A2",
                     "position": true
-                }, {
+                },
+                {
                     "name": "A4",
                     "position": true
-                }]
+                }
+            ]
         },
         {
             "name": "A124 off",
-            "switchOperations": [{
+            "switchOperations": [
+                {
                     "name": "A1",
                     "position": false
-                }, {
+                },
+                {
                     "name": "A2",
                     "position": false
-                }, {
+                },
+                {
                     "name": "A4",
                     "position": false
-                }]
-        }, {
+                }
+            ]
+        },
+        {
             "name": "All on",
-            "switchOperations": [{
+            "switchOperations": [
+                {
                     "name": "A1",
                     "position": true
-                }, {
+                },
+                {
                     "name": "A2",
                     "position": true
-                }, {
+                },
+                {
                     "name": "A3",
                     "position": true
-                }, {
+                },
+                {
                     "name": "A4",
                     "position": true
-                }, {
+                },
+                {
                     "name": "B1",
                     "position": true
-                }, {
+                },
+                {
                     "name": "B2",
                     "position": true
-                }]
-        }, {
+                }
+            ]
+        },
+        {
             "name": "All off",
-            "switchOperations": [{
+            "switchOperations": [
+                {
                     "name": "A1",
                     "position": false
-                }, {
+                },
+                {
                     "name": "A2",
                     "position": false
-                }, {
+                },
+                {
                     "name": "A3",
                     "position": false
-                }, {
+                },
+                {
                     "name": "A4",
                     "position": false
-                }, {
+                },
+                {
                     "name": "B1",
                     "position": false
-                }, {
+                },
+                {
                     "name": "B2",
                     "position": false
-                }]
-        }, {
+                }
+            ]
+        },
+        {
             "name": "Ins Bett",
-            "switchOperations": [{
+            "switchOperations": [
+                {
                     "name": "A1",
                     "position": false
-                }, {
+                },
+                {
                     "name": "A2",
                     "position": false
-                }, {
+                },
+                {
                     "name": "A3",
                     "position": false
-                }, {
+                },
+                {
                     "name": "A4",
                     "position": false
-                }, {
+                },
+                {
                     "name": "B1",
                     "position": false
-                }, {
+                },
+                {
                     "name": "B2",
                     "position": true
-                }]
+                }
+            ]
         }
     ]
 }

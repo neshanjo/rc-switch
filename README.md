@@ -103,6 +103,38 @@ sent to APPLICATION_PATH/api/wakeup. This url must be adapted if you change the 
 (configuration parameter backgroundTaskWakeupUrl). Have a look at logs/catalina.out when you started the Tomcat
 server in order to see this process happen.
 
+Experimental Features
+---------------------
+The service can poll an [AWS SQS](https://aws.amazon.com/sqs/) queue for switch events. Therefore, you have to create
+a queue with long polling of 20s and add a user with following policy (in AWS IAM):
+```
+{
+ "Version": "2012-10-17",
+ "Statement": [
+     {
+         "Sid": "VisualEditor0",
+         "Effect": "Allow",
+         "Action": [
+             "sqs:DeleteMessage",
+             "sqs:ReceiveMessage"
+         ],
+         "Resource": "<insert your arn here, e.g. arn:aws:sqs:<region>:<number>:<name>"
+     }
+ ]
+}
+``` 
+Then, you add the following to the configuration file:
+```
+"sqs": {
+        "accessKey": "A...",
+        "secretKey": "B...",
+        "queueUrl": "https://sqs.<region>.amazonaws.com/..."
+    }
+```
+This starts a background task which listens to queue events where the following *message attributes* are present (the
+message body is ignored): `switchName` as one of the names of the switches from the config file and `position` being
+either *on* or *off*. 
+
 Technology
 ----------
 
@@ -115,6 +147,7 @@ if you haven't used it yet).
 and [pi4j](http://pi4j.com) for dealing with the IO-Pins and the RF transmitter.
 * [Vue.js](https://vuejs.org/), [Materialize](http://materializecss.com), [jQuery](https://jquery.com/)
 and [Moment.js](http://momentjs.com/) for the frontend.
+* [AWS SDK](https://aws.amazon.com/sdk-for-java/) for the experimental AWS SQS integration.
 
 Questions?
 ----------

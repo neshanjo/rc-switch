@@ -15,3 +15,7 @@ hs_err_pid*
 target/
 /src/main/webapp/bower_components/
 /nb-configuration.xml
+
+# IntelliJ
+.idea/
+*.iml

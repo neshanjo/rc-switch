@@ -16,9 +16,8 @@
  */
 package de.neshanjo.rcswitch.server.background;
 
-import de.neshanjo.rcswitch.server.data.Configuration;
-import de.neshanjo.rcswitch.server.gpio.SwitchControl;
 import java.util.Timer;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
@@ -28,8 +27,12 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.neshanjo.rcswitch.server.data.Configuration;
+import de.neshanjo.rcswitch.server.gpio.SwitchControl;
 
 /**
  * This resource is used to start (and stop) background tasks. It would be much better to do this in an
@@ -57,8 +60,9 @@ public class BackgroundResource {
     public void init() {
         LOG.info("Starting background tasks");
         timer = new Timer();
-        timer.schedule(new EventTask(emf, switchControl), 0, 
+        timer.schedule(new EventTask(emf, switchControl), 0,
                 Configuration.getInstance().getBackgroundTaskIntervalInSeconds() * 1000);
+        new Thread(new SqsPollingWorker(switchControl)).start();
     }
 
     @PreDestroy

@@ -16,16 +16,20 @@
  */
 package de.neshanjo.rcswitch.server.data;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import static java.util.stream.Collectors.toSet;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import static java.util.stream.Collectors.toSet;
-import lombok.Data;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import lombok.Data;
 
 /**
  *
@@ -105,5 +109,6 @@ public class Configuration {
 
     private List<Switch> switches = new ArrayList<>();
     private List<Combination> combinations = new ArrayList<>();
+    private SqsConfig sqs;
 
 }
